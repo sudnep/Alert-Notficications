@@ -1,0 +1,65 @@
+
+
+<div id="carouselContent" class="carousel slide" style="margin-left:30px;margin-right:30px;" data-ride="carousel">
+    <div class="carousel-inner" role="listbox">
+        <ul id="carousalAlert">
+
+        </ul>
+
+    </div>
+
+</div>
+
+<script>
+
+$(function() {
+    getNotifications();
+});
+
+
+function getNotifications() {
+    var url = _spPageContextInfo.webAbsoluteUrl;
+    var today = new Date().toISOString();
+    //var url="http://muissharepoint.mufg-is.com/sites/testing/";
+    var requestUri = url + "/_api/web/lists/getbytitle('AlertList')/items?$top=4&$select=ID, ViewMore, Title,Description,Expires&$filter=Expires ge '" + today + "'&$orderby=Created desc";
+
+    // execute AJAX request
+
+    $.ajax({
+        url: requestUri,
+        type: "GET",
+        headers: {
+            "ACCEPT": "application/json;odata=verbose"
+        },
+        async: false,
+        success: function(data) {
+
+            if (data.d.results.length > 0) {
+                for (var i = 0; i < data.d.results.length; i++) {
+
+
+                    var idCount = i + 1;
+                    var itemID = data.d.results[i].ID;
+                    var title = data.d.results[i].Title;
+                    var description = data.d.results[i].Description;
+                    var expires = data.d.results[i].Expires;
+                    var link = data.d.results[i].ViewMore;
+
+                    var carousalAlertHTML = "<li class='carousel-item'><span class='fa fa-bell'> </span><span> " + title + "</span><span style='padding-right:10px;' class='float-right'><span class='viewAllModal fa fa-chevron-circle-down' style='color:#fff;' data-toggle='modal' data-target='#allAlertsModal' > View All</span></span></li>";
+
+                    $('#NotificationsModal').append(linksHTML);
+                    $('#carousalAlert').append(carousalAlertHTML);
+
+
+                }
+
+                $('#carousalAlert li:first').addClass('active');
+            }
+        },
+        error: function(err) {
+            //alert(err);
+        }
+    });
+
+}
+</script>
